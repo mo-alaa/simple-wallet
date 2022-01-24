@@ -17,3 +17,4 @@ Authentication: Jwt (with httpOnly).
 - Disable the (SendMoney) button once the user clicked, to prevent unhandled transactions.
 - Push notification to online users to update their available balance.
 - Implement unit testing for the whole app.
+- Remove logic from the backend's server.ts
