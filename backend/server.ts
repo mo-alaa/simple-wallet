@@ -28,7 +28,6 @@ interface JwtPayload {
 
 app.use((req: MyUserRequest, res, next) => {
   const { token } = req.cookies;
-  console.log("@1st middleware", token);
   if (token) {
     const secret: string = process.env.APP_SECRET as string;
     const { userId } = jwt.verify(token, secret) as JwtPayload;
@@ -187,4 +186,3 @@ app.post("/sendMoney", async (req: MyUserRequest, res) => {
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}.`);
 });
-// "🚨 An error occurred while starting the server"
