@@ -180,6 +180,12 @@ app.post("/sendMoney", async (req: MyUserRequest, res) => {
     },
   });
 
+  await prisma.transaction.create({data:{
+    amount,
+    senderId: user.id,
+    receiverId: receiver.id,
+  }})
+
   res.send(ourNewUser);
 });
 
