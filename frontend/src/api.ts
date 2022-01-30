@@ -1,136 +1,148 @@
-import { User } from "./models";
-import {endpoint, prodEndpoint} from './config'
+import { CurrentUser, Register, SigninUser, Transaction, ApiResponse } from './models'
+import { endpoint, prodEndpoint } from './config'
 
-const backendUri = process.env.NODE_ENV === "development" ? endpoint : prodEndpoint;
+const backendUri =
+  process.env.NODE_ENV === 'development' ? endpoint : prodEndpoint
 
-export async function getCurrentUser(): Promise<User | undefined> {
-  const url = `${backendUri}/me`;
+export async function getCurrentUser (): Promise<ApiResponse | undefined> {
+  const url = `${backendUri}/user/current`
   try {
-    const response = await fetch(url, { credentials: "include" });
-    if (response) {
-      const data = await response.json();
-
-      if (data.phone && data.name && data.amount) {
-        const loggedUser: User = {
-          name: data.name,
-          phone: data.phone,
-          amount: data.amount,
-        };
-        return loggedUser;
-      }
-    }
+    const response = await fetch(url, { credentials: 'include' })
+    const json = await response.json()
+   
+    const apiResponse : ApiResponse= {
+      currentUser: json.data,
+      message: json.message
+    } 
+    return apiResponse
+    // if (response.ok) {
+    //   console.log(json.message)
+    //   const apiResponse = json as ApiResponse
+    //   return apiResponse
+    //   // const currentUser = json.data as CurrentUser
+    //   // return currentUser
+    // }
+    // else console.log(json.message)
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 
-  return undefined;
+  return undefined
 }
 
-export async function sendMoney(
-  receiverPhone: string,
-  amount: number
-): Promise<User | undefined> {
-  const url = `${backendUri}/sendMoney`;
+export async function sendMoney (
+  transaction: Transaction
+): Promise<ApiResponse | undefined> {
+  const url = `${backendUri}/transaction/sendMoney`
 
   try {
     const response = await fetch(url, {
-      method: "post",
-      credentials: "include",
+      method: 'post',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ receiverPhone, amount }),
-    });
+      body: JSON.stringify(transaction)
+    })
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data.phone && data.name && data.amount) {
-        const loggedUser: User = {
-          name: data.name,
-          phone: data.phone,
-          amount: data.amount,
-        };
-        return loggedUser;
-      }
-    }
+    const json = await response.json()
+    const apiResponse : ApiResponse= {
+      currentUser: json.data,
+      message: json.message
+    } 
+    return apiResponse
+    // if (response.ok) {
+    //   console.log(json.message)
+    //   const currentUser = json.data as CurrentUser
+    //   return currentUser
+    // }
+    // else console.log(json.message)
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 
-  return undefined;
+  return undefined
 }
 
-export async function signIn(
-  phone: string,
-  password: string
-): Promise<User | undefined> {
-  const url = `${backendUri}/signin`;
-  console.log(url)
+export async function signIn (
+  values: SigninUser
+): Promise<ApiResponse | undefined> {
+  const url = `${backendUri}/user/signin`
+
   const response = await fetch(url, {
-    method: "post",
-    credentials: "include",
+    method: 'post',
+    credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ phone, password }),
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-
-    if (data.phone && data.name && data.amount) {
-      const loggedUser: User = {
-        name: data.name,
-        phone: data.phone,
-        amount: data.amount,
-      };
-      return loggedUser;
-    }
+    body: JSON.stringify(values)
+  })
+  try {
+    const json = await response.json()
+    const apiResponse : ApiResponse= {
+      currentUser: json.data,
+      message: json.message
+    } 
+    return apiResponse
+    // if (response.ok) {
+    //   const currentUser = json.data as CurrentUser
+    //   return currentUser
+    // }
+    // else console.log(json.message)
+  } catch (error) {
+    console.log(error)
   }
-  return undefined;
+  return undefined
 }
 
-export async function signUp(
-  name: string,
-  phone: string,
-  password: string
-): Promise<User | undefined> {
-  const url = `${backendUri}/signup`;
+export async function signUp (
+  registerUser: Register
+): Promise<ApiResponse | undefined> {
+  const url = `${backendUri}/user/signup`
 
   try {
     const response = await fetch(url, {
-      method: "post",
-      credentials: "include",
+      method: 'post',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ name, phone, password }),
-    });
+      body: JSON.stringify(registerUser)
+    })
 
-    const data = await response.json();
-    if (response.ok) {
-      if (data.phone && data.name && data.amount) {
-        const loggedUser: User = {
-          name: data.name,
-          phone: data.phone,
-          amount: data.amount,
-        };
-        return loggedUser;
-      }
-    }
+    const json = await response.json()
+
+    const apiResponse : ApiResponse= {
+      currentUser: json.data,
+      message: json.message
+    } 
+    return apiResponse
+    
+    // if (response.ok) {
+    //   console.log(json.message)
+    //   const currentUser = json.data as CurrentUser
+    //   return currentUser
+    // }
+    // else console.log(json.message)
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 
-  return undefined;
+  return undefined
 }
 
-export async function signOut() {
-  const url = `${backendUri}/signout`;
-
-  await fetch(url, {
-    method: "post",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-  });
+export async function signOut (): Promise<void> {
+  const url = `${backendUri}/user/signout`
+  
+  try {
+    const response = await fetch(url, {
+      method: 'post',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const json = await response.json()
+    console.log(json.message)
+  } catch (error) {
+    console.log(error)
+  }
 }

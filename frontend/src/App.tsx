@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { SignIn } from './components/SignIn';
-import { SignUp } from './components/SignUp';
-import { MyData } from './components/MyData'
+import { SignIn } from './components/SignIn'
+import { SignUp } from './components/SignUp'
+import { UserComponent } from './components/UserComponent'
 import { VerifyUser } from './components/VerifyUser'
-import './App.css';
+import './App.css'
 
 export const App: FC = () => {
   return (
@@ -14,16 +14,15 @@ export const App: FC = () => {
         <SignUp />
       </Route>
 
-      <Route path='/signin' >
+      <Route path='/signin'>
         <SignIn />
       </Route>
 
       <Route path='/'>
         <VerifyUser>
-          <MyData />
+          <UserComponent />
         </VerifyUser>
       </Route>
-
     </Switch>
-  );
+  )
 }

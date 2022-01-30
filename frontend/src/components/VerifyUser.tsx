@@ -1,34 +1,30 @@
-import { FC, useEffect, useState,ReactNode } from 'react'
-import { User } from '../models'
-import { getCurrentUser } from '../api';
-import { useHistory } from "react-router-dom";
+import { FC, useEffect, useState, ReactNode } from 'react'
+import { ApiResponse, CurrentUser } from '../models'
+import { getCurrentUser } from '../api'
+import { useHistory } from 'react-router-dom'
 
 interface Props {
   children: ReactNode
 }
 
-export const VerifyUser: FC<Props> = ({children}): JSX.Element => {
+export const VerifyUser: FC<Props> = ({ children }): JSX.Element => {
+  const [currentUser, setCurrentUser] = useState<CurrentUser>()
+  const history = useHistory()
 
-  const [currentUser, setCurrentUser] = useState<User>();
-  const history = useHistory();
-  
   useEffect(() => {
-
     async function checkIfLoggedIn() {
-      const user = await getCurrentUser();
-      console.log('user@verify', {user});
-      if (user) setCurrentUser(user);
+      const response: ApiResponse | undefined = await getCurrentUser()
+      const user = response?.currentUser
+      if (user !== undefined) setCurrentUser(user)
       else history.push('/signin')
     }
 
-    checkIfLoggedIn();
-  },[]);
+    checkIfLoggedIn()
+  }, [])
 
-  if(currentUser) {
-    console.log('logged currentUser data',currentUser);
+  if (currentUser != null) {
     return <>{children}</>
   }
-  
-  return <div>Loading...</div>
 
+  return <div>Loading...</div>
 }
